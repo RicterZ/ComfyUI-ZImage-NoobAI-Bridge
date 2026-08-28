@@ -1,10 +1,8 @@
 # ComfyUI Z-Image → NoobAI Bridge
 
-一组 ComfyUI 自定义节点与示例工作流：让 Z-Image 理解自然语言并规划人物构图，只通过 DWPose/OpenPose 把骨架交给 NoobAI/Illustrious，从而由 NoobAI 独立决定角色、服装和画风。
+用自然语言描述画面：Z-Image 负责构图和姿势，DWPose 提取骨架，NoobAI/Illustrious 负责角色与平涂画风，最后使用 RealESRGAN 做 2× 超分。
 
-> 示例工作流不包含模型文件。它使用 Z-Image、NoobAI/Illustrious、DWPose、OpenPose ControlNet 和两个可替换的风格 LoRA；请按下文准备对应模型。
-
-## 快速安装
+## 安装
 
 在 ComfyUI 的 `custom_nodes` 目录执行：
 
@@ -12,132 +10,94 @@
 git clone https://github.com/RicterZ/ComfyUI-ZImage-NoobAI-Bridge.git
 ```
 
-另外通过 ComfyUI Manager 安装：
+再通过 ComfyUI 扩展管理安装：
 
-- `comfyui_controlnet_aux`：提供 DWPose。
-- `ComfyUI_LayerStyle`：提供工作流中的显存释放节点。
+- `comfyui_controlnet_aux`
+- `ComfyUI_LayerStyle`
 
-重启 ComfyUI，然后打开：
+重启 ComfyUI，加载：
 
 ```text
 example_workflows/z-image-openpose-noobai-flat-2x.json
 ```
 
-## 准备模型
+## 模型文件
 
-示例工作流需要手动准备下面 8 个模型文件。路径均相对于 ComfyUI 根目录；例如安装在 `S:\ComfyUI` 时，`models\checkpoints` 表示 `S:\ComfyUI\models\checkpoints`。
+以下路径均相对于 ComfyUI 根目录。`comfyui_controlnet_aux` 自动管理的 DWPose 文件无需手动准备。
 
-| 阶段 | 必须使用的文件名 | 放置目录 | 工作流中的加载节点 |
-| --- | --- | --- | --- |
-| Z-Image | `z_image_turbo_fp8_e4m3fn.safetensors` | `models\diffusion_models` | `Z-Image Turbo FP8` |
-| Z-Image | `qwen_3_4b.safetensors` | `models\text_encoders` | `Z-Image Qwen Text Encoder` |
-| Z-Image | `ae.safetensors` | `models\vae` | `Z-Image VAE` |
-| NoobAI | `zukiNewCuteILL_newV20.safetensors` | `models\checkpoints` | `NoobAI/Illustrious 底模` |
-| NoobAI 风格 | `jyt3136-000010.safetensors` | `models\loras` | `NoobAI LoRA 1：JYT` |
-| NoobAI 风格 | `Blue Archive Animation Style.safetensors` | `models\loras` | `NoobAI LoRA 2：BA Animation` |
-| 姿势控制 | `openpose_pre.safetensors` | `models\controlnet` | `NoobAI OpenPose ControlNet` |
-| 最终超分 | `RealESRGAN_x4plus_anime_6B.pth` | `models\upscale_models` | `动漫超分模型：RealESRGAN 4×` |
+| 文件名 | 放置目录 |
+| --- | --- |
+| `z_image_turbo_fp8_e4m3fn.safetensors` | `models\diffusion_models` |
+| `qwen_3_4b.safetensors` | `models\text_encoders` |
+| `ae.safetensors` | `models\vae` |
+| `zukiNewCuteILL_newV20.safetensors` | `models\checkpoints` |
+| `jyt3136-000010.safetensors` | `models\loras` |
+| `Blue Archive Animation Style.safetensors` | `models\loras` |
+| `openpose_pre.safetensors` | `models\controlnet` |
+| `RealESRGAN_x4plus_anime_6B.pth` | `models\upscale_models` |
 
-以 `S:\ComfyUI` 为例，最终目录应为：
+旧安装中的 Z-Image UNET 如果已放在 `models\unet` 且加载节点可以识别，可以保持原位。
 
-```text
-S:\ComfyUI\
-└─ models\
-   ├─ diffusion_models\
-   │  └─ z_image_turbo_fp8_e4m3fn.safetensors
-   ├─ text_encoders\
-   │  └─ qwen_3_4b.safetensors
-   ├─ vae\
-   │  └─ ae.safetensors
-   ├─ checkpoints\
-   │  └─ zukiNewCuteILL_newV20.safetensors
-   ├─ loras\
-   │  ├─ jyt3136-000010.safetensors
-   │  └─ Blue Archive Animation Style.safetensors
-   ├─ controlnet\
-   │  └─ openpose_pre.safetensors
-   └─ upscale_models\
-      └─ RealESRGAN_x4plus_anime_6B.pth
-```
+## 文本模型
 
-`comfyui_controlnet_aux` 会自行管理 DWPose 所需的检测文件，因此不在这份手动模型清单中。第一次运行 DWPose 时保持网络可用即可。
-
-注意：
-
-- 这里的 `qwen_3_4b.safetensors` 是 **Z-Image 的文本编码器**，不是负责“自然语言转 NoobAI 标签”的 Ollama 模型；两者不能互相替代。
-- 旧版 ComfyUI 也可能把 Z-Image UNET 放在 `models\unet`。现有安装如果能够在加载节点中选到它，可以保持原位；新安装推荐使用 `models\diffusion_models`。
-- 示例 JSON 按上表文件名保存。若文件被改名或放在子目录中，加载工作流后需要在相应 Loader 节点重新选择一次。
-- 两个 LoRA 都属于 NoobAI 阶段；Z-Image 阶段不加载任何 LoRA。
-
-## 配置自然语言转换
-
-示例默认通过本机 Ollama 调用：
+示例默认使用本机 Ollama：
 
 ```powershell
 ollama pull orcarouter/Qwen3.8-27B-Uncensored:q4_K_M
 ollama serve
 ```
 
-默认地址是 `http://127.0.0.1:11434`。专用的 NoobAI 动态标签节点会在请求前释放 ComfyUI 显存，并在请求结束后让 Ollama 卸载模型，减少第二次运行时的显存争用。
+也可以在“文本模型：中文场景 → NoobAI 动态标签”节点中切换为 `openai_compatible`，然后填写：
 
-通用的“自然语言 → Illustrious 提示词”节点还支持 OpenAI-compatible API。API key 只从环境变量读取，不写入工作流 JSON。
+- `api_base`：服务地址，例如 `https://example.com/v1`
+- `model`：在线模型名称
+- `api_key`：API Key，直接保存在当前 workflow 中，无需设置环境变量或重启 ComfyUI
 
-## 生成新构图
+分享 workflow 前请清空 `api_key`。
 
-1. 在左侧输入简单描述和明确的人物 Danbooru 标签。
-2. 将“骨架开关”设为“生成并保存新骨架（运行 Z-Image）”。
-3. 将提示词编辑节点设为“始终跟随简单输入”。
-4. Queue 一次。工作流会依次执行：
+## Usage
 
-```text
-自然语言 → Z-Image 构图 → DWPose 骨架 → NoobAI 空 Latent 生成 → RealESRGAN 2×
-```
+### 1. 输入自然语言与人物标签
 
-NoobAI 从空 Latent、`denoise = 1.0` 开始，因此不会继承 Z-Image 的衣服、颜色或纹理。Z-Image 阶段不需要额外 LoRA。
+只需修改左侧输入节点的两项内容。
 
-## 复用骨架并微调 NoobAI
-
-1. 骨架满意后，将“骨架开关”改为“复用上次骨架（跳过 Z-Image）”。
-2. 将“Qwen 结果”改为“使用下方完整提示词（不调用模型）”。
-3. 直接编辑完整提示词并反复 Queue。
-
-复用模式使用懒输入阻断整个 Z-Image/DWPose 分支，而不是仅依赖 ComfyUI 的临时执行缓存。最后一次骨架保存为：
+正面示例：
 
 ```text
-ComfyUI/user/default/comfyui_nl_prompt_cache/last_openpose.png
+简单描述：
+两个人并排站在学校走廊，各占画面约一半，身穿校服和过膝袜，
+双手抬到胸前做猫爪握拳姿势，闭嘴微笑，略带得意地看向镜头，
+全身构图，轻微仰视
+
+人物标签：
+(momoi \(blue archive\):1.2), (midori \(blue archive\):1.2)
 ```
 
-要更换构图，只需把骨架开关切回“生成并保存新骨架”。
+### 2. 第一次生成
 
-## 节点说明
+设置：
 
-| 节点 | 作用 |
-| --- | --- |
-| `ZImageNoobAIPromptBridge` | 从两项输入生成 Z-Image 构图描述，并原样转发人物标签 |
-| `NoobAIDynamicPromptCompiler` | 把场景描述转换为动态 Danbooru 标签，再拼接人物与固定风格词 |
-| `IllustriousNaturalLanguagePrompt` | 可配置的通用 Illustrious/NoobAI 自然语言转换节点 |
-| `IllustriousPromptEditor` | 显示、编辑、锁定或持续同步完整提示词；手动模式会懒阻断 LLM |
-| `ReusablePoseCache` | 保存最后一次 OpenPose 图，复用时懒阻断 Z-Image 与 DWPose |
-| `LazyImageVRAMPurge` | 生成新骨架时卸载 Z-Image；复用骨架时不会成为独立输出而强制运行上游 |
-| `WanVideoNaturalLanguagePrompt` | 把简短动作意图整理成 Wan2.2 图生视频提示词 |
+- NoobAI 提示词开关：`始终跟随简单输入（变更时调用文本模型）`
+- Z-Image 骨架开关：`生成并保存新骨架（运行 Z-Image）`
 
-## 常见问题
+点击 Queue。工作流将依次完成：
 
-### 复用骨架时 Z-Image 仍然执行
+```text
+自然语言 → Z-Image 构图 → DWPose 骨架 → NoobAI 生成 → RealESRGAN 2×
+```
 
-确认工作流中没有任何 `SaveImage`、`PreviewImage` 或声明为 `OUTPUT_NODE` 的显存清理节点直接连接在 Z-Image 分支上。独立输出节点会强制执行它的上游，绕过骨架缓存的懒阻断设计。仓库示例使用非输出型的 `LazyImageVRAMPurge`，不要把它替换成会强制执行的第三方清理节点。
+NoobAI 的 seed 已连接 ComfyUI 原生 `PrimitiveInt` 节点，并设为 `randomize`，每次 Queue 都会使用新种子。
 
-### 第一次复用骨架时报错
+### 3. 复用骨架，只调整 NoobAI
 
-必须先用“生成并保存新骨架”成功运行一次。缓存文件不存在时，节点会明确拒绝复用。
+构图满意后设置：
 
-### NoobAI 不遵循人物外观
+- NoobAI 提示词开关：`使用下方完整提示词（不调用模型）`
+- Z-Image 骨架开关：`复用上次骨架（跳过 Z-Image）`
 
-确认人物标签是模型认识的精确 Danbooru 标签，并使用兼容 NoobAI/Illustrious 的 checkpoint 和 LoRA。OpenPose 只约束身体关键点，不负责角色身份。
+然后直接修改完整提示词并再次 Queue。此模式会跳过文本模型、Z-Image 和 DWPose，只重新运行 NoobAI 与超分。
 
-### 风格被 ControlNet 压弱
-
-示例把 OpenPose 强度设为 `0.8`，结束比例设为 `0.65`，让后 35% 采样过程留给 NoobAI 与风格 LoRA。必要时进一步降低结束比例，不要改成 RGB img2img。
+需要新构图时，把两个开关切回第一次生成的设置即可。
 
 ## License
 

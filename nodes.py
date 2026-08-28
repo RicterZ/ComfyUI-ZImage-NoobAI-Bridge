@@ -97,6 +97,46 @@ def _release_comfy_vram():
         print(f"[comfyui_nl_prompt] ComfyUI VRAM release warning: {error}")
 
 
+def _openai_chat_endpoint(api_base):
+    base = (api_base or "").strip().rstrip("/")
+    if base.endswith("/chat/completions"):
+        return base
+    if base.endswith("/v1"):
+        return f"{base}/chat/completions"
+    return f"{base}/v1/chat/completions"
+
+
+def _request_openai_chat(
+    api_base,
+    model,
+    messages,
+    api_key,
+    temperature,
+    max_tokens,
+    timeout_seconds,
+):
+    headers = {"Content-Type": "application/json"}
+    key = (api_key or "").strip()
+    if key:
+        headers["Authorization"] = f"Bearer {key}"
+    response = _request_json(
+        _openai_chat_endpoint(api_base),
+        {
+            "model": model,
+            "messages": messages,
+            "temperature": temperature,
+            "max_tokens": max_tokens,
+            "stream": False,
+        },
+        headers,
+        timeout_seconds,
+    )
+    choices = response.get("choices") or []
+    if not choices:
+        raise RuntimeError(f"Text model returned no choices: {response}")
+    return choices[0].get("message", {}).get("content", "")
+
+
 def _wait_until_ollama_unloaded(base, model, timeout):
     deadline = time.monotonic() + max(5, timeout)
     while time.monotonic() < deadline:
@@ -210,9 +250,9 @@ class IllustriousNaturalLanguagePrompt:
                         "multiline": False,
                     },
                 ),
-                "api_key_env": (
+                "api_key": (
                     "STRING",
-                    {"default": "PROMPT_LLM_API_KEY", "multiline": False},
+                    {"default": "", "multiline": False},
                 ),
                 "system_prompt": (
                     "STRING",
@@ -250,7 +290,7 @@ class IllustriousNaturalLanguagePrompt:
         backend,
         api_base,
         model,
-        api_key_env,
+        api_key,
         system_prompt,
         temperature,
         max_tokens,
@@ -305,27 +345,15 @@ class IllustriousNaturalLanguagePrompt:
                 _unload_ollama(base, model, timeout_seconds)
             generated = response.get("message", {}).get("content", "")
         else:
-            key = os.environ.get(api_key_env, "") if api_key_env else ""
-            headers = {"Content-Type": "application/json"}
-            if key:
-                headers["Authorization"] = f"Bearer {key}"
-            payload = {
-                "model": model,
-                "messages": messages,
-                "temperature": temperature,
-                "max_tokens": max_tokens,
-                "stream": False,
-            }
-            endpoint = (
-                f"{base}/chat/completions"
-                if base.endswith("/v1")
-                else f"{base}/v1/chat/completions"
+            generated = _request_openai_chat(
+                base,
+                model,
+                messages,
+                api_key,
+                temperature,
+                max_tokens,
+                timeout_seconds,
             )
-            response = _request_json(endpoint, payload, headers, timeout_seconds)
-            choices = response.get("choices") or []
-            if not choices:
-                raise RuntimeError(f"Text model returned no choices: {response}")
-            generated = choices[0].get("message", {}).get("content", "")
 
         generated = _clean_tags(generated)
         if not generated:
@@ -358,9 +386,9 @@ class WanVideoNaturalLanguagePrompt:
                         "multiline": False,
                     },
                 ),
-                "api_key_env": (
+                "api_key": (
                     "STRING",
-                    {"default": "PROMPT_LLM_API_KEY", "multiline": False},
+                    {"default": "", "multiline": False},
                 ),
                 "temperature": (
                     "FLOAT",
@@ -390,7 +418,7 @@ class WanVideoNaturalLanguagePrompt:
         backend,
         api_base,
         model,
-        api_key_env,
+        api_key,
         temperature,
         max_tokens,
         timeout_seconds,
@@ -438,27 +466,15 @@ class WanVideoNaturalLanguagePrompt:
                 _unload_ollama(base, model, timeout_seconds)
             optimized = response.get("message", {}).get("content", "")
         else:
-            key = os.environ.get(api_key_env, "") if api_key_env else ""
-            headers = {"Content-Type": "application/json"}
-            if key:
-                headers["Authorization"] = f"Bearer {key}"
-            payload = {
-                "model": model,
-                "messages": messages,
-                "temperature": temperature,
-                "max_tokens": max_tokens,
-                "stream": False,
-            }
-            endpoint = (
-                f"{base}/chat/completions"
-                if base.endswith("/v1")
-                else f"{base}/v1/chat/completions"
+            optimized = _request_openai_chat(
+                base,
+                model,
+                messages,
+                api_key,
+                temperature,
+                max_tokens,
+                timeout_seconds,
             )
-            response = _request_json(endpoint, payload, headers, timeout_seconds)
-            choices = response.get("choices") or []
-            if not choices:
-                raise RuntimeError(f"Text model returned no choices: {response}")
-            optimized = choices[0].get("message", {}).get("content", "")
 
         optimized = _clean_model_text(optimized)
         if not optimized:
@@ -535,7 +551,7 @@ Example output: 2girls, multiple girls, standing together, side-by-side, equal f
 
 
 class NoobAIDynamicPromptCompiler:
-    """One-shot, lazy Ollama compiler; identity remains a manual input."""
+    """Lazy prompt compiler; identity remains a separate manual input."""
 
     @classmethod
     def INPUT_TYPES(cls):
@@ -543,6 +559,22 @@ class NoobAIDynamicPromptCompiler:
             "required": {
                 "simple_description": ("STRING", {"forceInput": True}),
                 "character_tag": ("STRING", {"forceInput": True}),
+                "backend": (["ollama", "openai_compatible"],),
+                "api_base": (
+                    "STRING",
+                    {"default": "http://127.0.0.1:11434", "multiline": False},
+                ),
+                "model": (
+                    "STRING",
+                    {
+                        "default": "orcarouter/Qwen3.8-27B-Uncensored:q4_K_M",
+                        "multiline": False,
+                    },
+                ),
+                "api_key": (
+                    "STRING",
+                    {"default": "", "multiline": False},
+                ),
             }
         }
 
@@ -552,43 +584,66 @@ class NoobAIDynamicPromptCompiler:
     CATEGORY = "prompt/text model"
     OUTPUT_NODE = False
 
-    def compile(self, simple_description, character_tag):
+    def compile(
+        self,
+        simple_description,
+        character_tag,
+        backend,
+        api_base,
+        model,
+        api_key,
+    ):
         description = (simple_description or "").strip()
         character = (character_tag or "").strip().strip(",")
         if not description or not character:
             raise RuntimeError("简单描述或人物标签为空")
 
-        base = "http://127.0.0.1:11434"
-        model = "orcarouter/Qwen3.8-27B-Uncensored:q4_K_M"
-        _release_comfy_vram()
-        if not _unload_ollama(base, model, 120):
-            raise RuntimeError(
-                "Ollama 旧模型未能卸载，请先执行 "
-                f"`ollama stop {model}` 后重试"
-            )
-
-        payload = {
-            "model": model,
-            "messages": [
-                {"role": "system", "content": NOOBAI_DYNAMIC_SYSTEM_PROMPT},
-                {"role": "user", "content": description},
-            ],
-            "stream": False,
-            "think": False,
-            "keep_alive": 0,
-            "options": {"temperature": 0.1, "num_predict": 400, "num_ctx": 4096},
-        }
-        try:
-            response = _request_json(
-                f"{base}/api/chat",
-                payload,
-                {"Content-Type": "application/json"},
+        base = api_base.rstrip("/")
+        messages = [
+            {"role": "system", "content": NOOBAI_DYNAMIC_SYSTEM_PROMPT},
+            {"role": "user", "content": description},
+        ]
+        if backend == "ollama":
+            _release_comfy_vram()
+            if not _unload_ollama(base, model, 180):
+                raise RuntimeError(
+                    "Ollama 旧模型未能卸载，请先执行 "
+                    f"`ollama stop {model}` 后重试"
+                )
+            payload = {
+                "model": model,
+                "messages": messages,
+                "stream": False,
+                "think": False,
+                "keep_alive": 0,
+                "options": {
+                    "temperature": 0.1,
+                    "num_predict": 400,
+                    "num_ctx": 4096,
+                },
+            }
+            try:
+                response = _request_json(
+                    f"{base}/api/chat",
+                    payload,
+                    {"Content-Type": "application/json"},
+                    180,
+                )
+            finally:
+                _unload_ollama(base, model, 180)
+            model_text = response.get("message", {}).get("content", "")
+        else:
+            model_text = _request_openai_chat(
+                base,
+                model,
+                messages,
+                api_key,
+                0.1,
+                400,
                 180,
             )
-        finally:
-            _unload_ollama(base, model, 120)
 
-        dynamic = _clean_tags(response.get("message", {}).get("content", ""))
+        dynamic = _clean_tags(model_text)
         if not dynamic:
             raise RuntimeError("Qwen 返回了空的 NoobAI 动态标签")
 
