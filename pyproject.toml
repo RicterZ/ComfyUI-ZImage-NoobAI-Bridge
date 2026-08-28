@@ -1,0 +1,18 @@
+[project]
+name = "comfyui-zimage-noobai-bridge"
+version = "0.1.0"
+description = "Natural-language prompt tools and a pose-only Z-Image to NoobAI bridge for ComfyUI."
+readme = "README.md"
+requires-python = ">=3.10"
+license = { file = "LICENSE" }
+authors = [{ name = "RicterZ" }]
+dependencies = []
+
+[project.urls]
+Repository = "https://github.com/RicterZ/ComfyUI-ZImage-NoobAI-Bridge"
+Issues = "https://github.com/RicterZ/ComfyUI-ZImage-NoobAI-Bridge/issues"
+
+[tool.comfy]
+PublisherId = "ricterz"
+DisplayName = "Z-Image to NoobAI Bridge"
+Icon = ""

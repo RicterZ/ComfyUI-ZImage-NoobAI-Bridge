@@ -1,0 +1,2560 @@
+{
+  "id": "c931a57a-26f2-4dab-96db-63ac73e33e78",
+  "revision": 0,
+  "last_node_id": 40,
+  "last_link_id": 54,
+  "nodes": [
+    {
+      "id": 9,
+      "type": "VAEDecodeTiled",
+      "pos": [
+        2861.9138953824313,
+        198.52157078077585
+      ],
+      "size": [
+        300,
+        155
+      ],
+      "flags": {},
+      "order": 19,
+      "mode": 0,
+      "inputs": [
+        {
+          "localized_name": "Latent",
+          "name": "samples",
+          "type": "LATENT",
+          "link": 8
+        },
+        {
+          "localized_name": "vae",
+          "name": "vae",
+          "type": "VAE",
+          "link": 9
+        },
+        {
+          "localized_name": "分块尺寸",
+          "name": "tile_size",
+          "type": "INT",
+          "widget": {
+            "name": "tile_size"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "重叠",
+          "name": "overlap",
+          "type": "INT",
+          "widget": {
+            "name": "overlap"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "时间尺寸",
+          "name": "temporal_size",
+          "type": "INT",
+          "widget": {
+            "name": "temporal_size"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "时间重叠",
+          "name": "temporal_overlap",
+          "type": "INT",
+          "widget": {
+            "name": "temporal_overlap"
+          },
+          "link": null
+        }
+      ],
+      "outputs": [
+        {
+          "localized_name": "图像",
+          "name": "IMAGE",
+          "type": "IMAGE",
+          "links": [
+            10
+          ]
+        }
+      ],
+      "title": "Z-Image 分块 VAE 解码（base 原参数）",
+      "properties": {
+        "Node name for S&R": "VAEDecodeTiled"
+      },
+      "widgets_values": [
+        896,
+        384,
+        64,
+        8
+      ],
+      "widgets_values_named": {
+        "tile_size": 896,
+        "overlap": 384,
+        "temporal_size": 64,
+        "temporal_overlap": 8
+      }
+    },
+    {
+      "id": 29,
+      "type": "NoobAIDynamicPromptCompiler",
+      "pos": [
+        750.5026396724056,
+        67.00500607380053
+      ],
+      "size": [
+        430,
+        135
+      ],
+      "flags": {},
+      "order": 14,
+      "mode": 0,
+      "inputs": [
+        {
+          "localized_name": "simple_description",
+          "name": "simple_description",
+          "type": "STRING",
+          "link": 41
+        },
+        {
+          "localized_name": "character_tag",
+          "name": "character_tag",
+          "type": "STRING",
+          "link": 42
+        }
+      ],
+      "outputs": [
+        {
+          "localized_name": "full_noob_prompt",
+          "name": "full_noob_prompt",
+          "type": "STRING",
+          "links": [
+            43
+          ]
+        },
+        {
+          "localized_name": "dynamic_tags",
+          "name": "dynamic_tags",
+          "type": "STRING",
+          "links": null
+        }
+      ],
+      "title": "Qwen 只负责：中文场景 → NoobAI 动态标签",
+      "properties": {
+        "Node name for S&R": "NoobAIDynamicPromptCompiler"
+      },
+      "color": "#23364a",
+      "bgcolor": "#304b68"
+    },
+    {
+      "id": 10,
+      "type": "LayerUtility: PurgeVRAM V2",
+      "pos": [
+        3245.7465497910116,
+        109.80939439987282
+      ],
+      "size": [
+        337.8921875,
+        120
+      ],
+      "flags": {},
+      "order": 21,
+      "mode": 0,
+      "inputs": [
+        {
+          "localized_name": "任意内容",
+          "name": "anything",
+          "type": "*",
+          "link": 10
+        },
+        {
+          "localized_name": "清除缓存",
+          "name": "purge_cache",
+          "type": "BOOLEAN",
+          "widget": {
+            "name": "purge_cache"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "清除模型",
+          "name": "purge_models",
+          "type": "BOOLEAN",
+          "widget": {
+            "name": "purge_models"
+          },
+          "link": null
+        }
+      ],
+      "outputs": [
+        {
+          "localized_name": "any",
+          "name": "any",
+          "type": "*",
+          "links": [
+            12
+          ]
+        }
+      ],
+      "title": "关键：保留图像，卸载 Z-Image 再进入 NoobAI",
+      "properties": {
+        "Node name for S&R": "LayerUtility: PurgeVRAM V2"
+      },
+      "widgets_values": [
+        true,
+        true
+      ],
+      "widgets_values_named": {
+        "purge_cache": true,
+        "purge_models": true
+      },
+      "color": "rgba(38, 73, 116, 0.7)"
+    },
+    {
+      "id": 13,
+      "type": "CheckpointLoaderSimple",
+      "pos": [
+        1421.4385536551858,
+        785.7040461129405
+      ],
+      "size": [
+        420,
+        105
+      ],
+      "flags": {},
+      "order": 1,
+      "mode": 0,
+      "inputs": [
+        {
+          "localized_name": "Checkpoint名称",
+          "name": "ckpt_name",
+          "type": "COMBO",
+          "widget": {
+            "name": "ckpt_name"
+          },
+          "link": null
+        }
+      ],
+      "outputs": [
+        {
+          "localized_name": "模型",
+          "name": "MODEL",
+          "type": "MODEL",
+          "links": [
+            14
+          ]
+        },
+        {
+          "localized_name": "CLIP",
+          "name": "CLIP",
+          "type": "CLIP",
+          "links": [
+            15
+          ]
+        },
+        {
+          "localized_name": "VAE",
+          "name": "VAE",
+          "type": "VAE",
+          "links": [
+            31
+          ]
+        }
+      ],
+      "title": "NoobAI/Illustrious 底模：Zuki New Cute v2",
+      "properties": {
+        "Node name for S&R": "CheckpointLoaderSimple"
+      },
+      "widgets_values": [
+        "zukiNewCuteILL_newV20.safetensors"
+      ],
+      "widgets_values_named": {
+        "ckpt_name": "zukiNewCuteILL_newV20.safetensors"
+      }
+    },
+    {
+      "id": 14,
+      "type": "LoraLoader",
+      "pos": [
+        1877.00340134762,
+        779.790464586151
+      ],
+      "size": [
+        390,
+        155
+      ],
+      "flags": {},
+      "order": 10,
+      "mode": 0,
+      "inputs": [
+        {
+          "localized_name": "模型",
+          "name": "model",
+          "type": "MODEL",
+          "link": 14
+        },
+        {
+          "localized_name": "CLIP",
+          "name": "clip",
+          "type": "CLIP",
+          "link": 15
+        },
+        {
+          "localized_name": "LoRA名称",
+          "name": "lora_name",
+          "type": "COMBO",
+          "widget": {
+            "name": "lora_name"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "模型强度",
+          "name": "strength_model",
+          "type": "FLOAT",
+          "widget": {
+            "name": "strength_model"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "CLIP强度",
+          "name": "strength_clip",
+          "type": "FLOAT",
+          "widget": {
+            "name": "strength_clip"
+          },
+          "link": null
+        }
+      ],
+      "outputs": [
+        {
+          "localized_name": "模型",
+          "name": "MODEL",
+          "type": "MODEL",
+          "links": [
+            16
+          ]
+        },
+        {
+          "localized_name": "CLIP",
+          "name": "CLIP",
+          "type": "CLIP",
+          "links": [
+            17
+          ]
+        }
+      ],
+      "title": "NoobAI LoRA 1：JYT 0.4 / 0.4（与平涂工作流一致）",
+      "properties": {
+        "Node name for S&R": "LoraLoader"
+      },
+      "widgets_values": [
+        "jyt3136-000010.safetensors",
+        0.4,
+        0.4
+      ],
+      "widgets_values_named": {
+        "lora_name": "jyt3136-000010.safetensors",
+        "strength_model": 0.4,
+        "strength_clip": 0.4
+      }
+    },
+    {
+      "id": 15,
+      "type": "LoraLoader",
+      "pos": [
+        2317.3519998318775,
+        804.9230845624263
+      ],
+      "size": [
+        441.634375,
+        155
+      ],
+      "flags": {},
+      "order": 15,
+      "mode": 0,
+      "inputs": [
+        {
+          "localized_name": "模型",
+          "name": "model",
+          "type": "MODEL",
+          "link": 16
+        },
+        {
+          "localized_name": "CLIP",
+          "name": "clip",
+          "type": "CLIP",
+          "link": 17
+        },
+        {
+          "localized_name": "LoRA名称",
+          "name": "lora_name",
+          "type": "COMBO",
+          "widget": {
+            "name": "lora_name"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "模型强度",
+          "name": "strength_model",
+          "type": "FLOAT",
+          "widget": {
+            "name": "strength_model"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "CLIP强度",
+          "name": "strength_clip",
+          "type": "FLOAT",
+          "widget": {
+            "name": "strength_clip"
+          },
+          "link": null
+        }
+      ],
+      "outputs": [
+        {
+          "localized_name": "模型",
+          "name": "MODEL",
+          "type": "MODEL",
+          "links": [
+            18
+          ]
+        },
+        {
+          "localized_name": "CLIP",
+          "name": "CLIP",
+          "type": "CLIP",
+          "links": [
+            20,
+            21
+          ]
+        }
+      ],
+      "title": "NoobAI LoRA 2：BA Animation 0.7 / 0.4（与平涂工作流一致）",
+      "properties": {
+        "Node name for S&R": "LoraLoader"
+      },
+      "widgets_values": [
+        "Blue Archive Animation Style.safetensors",
+        0.7,
+        0.4
+      ],
+      "widgets_values_named": {
+        "lora_name": "Blue Archive Animation Style.safetensors",
+        "strength_model": 0.7,
+        "strength_clip": 0.4
+      }
+    },
+    {
+      "id": 16,
+      "type": "CLIPTextEncode",
+      "pos": [
+        1416.2448028475524,
+        990.374047170494
+      ],
+      "size": [
+        850,
+        235
+      ],
+      "flags": {},
+      "order": 20,
+      "mode": 0,
+      "inputs": [
+        {
+          "localized_name": "clip",
+          "name": "clip",
+          "type": "CLIP",
+          "link": 20
+        },
+        {
+          "localized_name": "文本",
+          "name": "text",
+          "type": "STRING",
+          "widget": {
+            "name": "text"
+          },
+          "link": 40
+        }
+      ],
+      "outputs": [
+        {
+          "localized_name": "条件",
+          "name": "CONDITIONING",
+          "type": "CONDITIONING",
+          "links": [
+            22
+          ]
+        }
+      ],
+      "title": "NoobAI 人物+画风提示词（自动生成）",
+      "properties": {
+        "Node name for S&R": "CLIPTextEncode"
+      },
+      "widgets_values": [
+        ""
+      ],
+      "widgets_values_named": {
+        "text": ""
+      }
+    },
+    {
+      "id": 39,
+      "type": "SaveImage",
+      "pos": [
+        37.69625738584211,
+        784.807904213565
+      ],
+      "size": [
+        520,
+        600
+      ],
+      "flags": {},
+      "order": 32,
+      "mode": 0,
+      "inputs": [
+        {
+          "localized_name": "图片",
+          "name": "images",
+          "type": "IMAGE",
+          "link": 53
+        },
+        {
+          "localized_name": "文件名前缀",
+          "name": "filename_prefix",
+          "type": "STRING",
+          "widget": {
+            "name": "filename_prefix"
+          },
+          "link": null
+        }
+      ],
+      "outputs": [
+        {
+          "localized_name": "images",
+          "name": "images",
+          "type": "IMAGE",
+          "links": null
+        }
+      ],
+      "title": "C. 平涂保真 2× 高清图（1664×2944）",
+      "properties": {
+        "Node name for S&R": "SaveImage"
+      },
+      "widgets_values": [
+        "HybridDemo/noob_controlnet_flat_2x"
+      ],
+      "widgets_values_named": {
+        "filename_prefix": "HybridDemo/noob_controlnet_flat_2x"
+      }
+    },
+    {
+      "id": 3,
+      "type": "VAELoader",
+      "pos": [
+        1485.2379229754015,
+        429.49721966999806
+      ],
+      "size": [
+        330,
+        62
+      ],
+      "flags": {},
+      "order": 2,
+      "mode": 0,
+      "inputs": [
+        {
+          "localized_name": "vae名称",
+          "name": "vae_name",
+          "type": "COMBO",
+          "widget": {
+            "name": "vae_name"
+          },
+          "link": null
+        }
+      ],
+      "outputs": [
+        {
+          "localized_name": "VAE",
+          "name": "VAE",
+          "type": "VAE",
+          "links": [
+            9
+          ]
+        }
+      ],
+      "title": "Z-Image VAE",
+      "properties": {
+        "Node name for S&R": "VAELoader"
+      },
+      "widgets_values": [
+        "ae.safetensors"
+      ],
+      "widgets_values_named": {
+        "vae_name": "ae.safetensors"
+      }
+    },
+    {
+      "id": 2,
+      "type": "CLIPLoader",
+      "pos": [
+        1481.8997839686745,
+        242.77883662010206
+      ],
+      "size": [
+        330,
+        106
+      ],
+      "flags": {},
+      "order": 3,
+      "mode": 0,
+      "inputs": [
+        {
+          "localized_name": "CLIP名称",
+          "name": "clip_name",
+          "type": "COMBO",
+          "widget": {
+            "name": "clip_name"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "类型",
+          "name": "type",
+          "type": "COMBO",
+          "widget": {
+            "name": "type"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "设备",
+          "name": "device",
+          "shape": 7,
+          "type": "COMBO",
+          "widget": {
+            "name": "device"
+          },
+          "link": null
+        }
+      ],
+      "outputs": [
+        {
+          "localized_name": "CLIP",
+          "name": "CLIP",
+          "type": "CLIP",
+          "links": [
+            3,
+            4
+          ]
+        }
+      ],
+      "title": "Z-Image Qwen Text Encoder",
+      "properties": {
+        "Node name for S&R": "CLIPLoader"
+      },
+      "widgets_values": [
+        "qwen_3_4b.safetensors",
+        "qwen_image",
+        "default"
+      ],
+      "widgets_values_named": {
+        "clip_name": "qwen_3_4b.safetensors",
+        "type": "qwen_image",
+        "device": "default"
+      }
+    },
+    {
+      "id": 1,
+      "type": "UNETLoader",
+      "pos": [
+        1479.396256115236,
+        86.90894693242839
+      ],
+      "size": [
+        330,
+        82
+      ],
+      "flags": {},
+      "order": 4,
+      "mode": 0,
+      "inputs": [
+        {
+          "localized_name": "UNet名称",
+          "name": "unet_name",
+          "type": "COMBO",
+          "widget": {
+            "name": "unet_name"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "数据类型",
+          "name": "weight_dtype",
+          "type": "COMBO",
+          "widget": {
+            "name": "weight_dtype"
+          },
+          "link": null
+        }
+      ],
+      "outputs": [
+        {
+          "localized_name": "模型",
+          "name": "MODEL",
+          "type": "MODEL",
+          "links": [
+            2
+          ]
+        }
+      ],
+      "title": "Z-Image Turbo FP8（来自 base workflow）",
+      "properties": {
+        "Node name for S&R": "UNETLoader"
+      },
+      "widgets_values": [
+        "z_image_turbo_fp8_e4m3fn.safetensors",
+        "default"
+      ],
+      "widgets_values_named": {
+        "unet_name": "z_image_turbo_fp8_e4m3fn.safetensors",
+        "weight_dtype": "default"
+      }
+    },
+    {
+      "id": 6,
+      "type": "CLIPTextEncode",
+      "pos": [
+        1844.3892004083589,
+        505.2399538306718
+      ],
+      "size": [
+        590,
+        175
+      ],
+      "flags": {},
+      "order": 11,
+      "mode": 0,
+      "inputs": [
+        {
+          "localized_name": "clip",
+          "name": "clip",
+          "type": "CLIP",
+          "link": 4
+        },
+        {
+          "localized_name": "文本",
+          "name": "text",
+          "type": "STRING",
+          "widget": {
+            "name": "text"
+          },
+          "link": null
+        }
+      ],
+      "outputs": [
+        {
+          "localized_name": "条件",
+          "name": "CONDITIONING",
+          "type": "CONDITIONING",
+          "links": [
+            6
+          ]
+        }
+      ],
+      "title": "Z-Image 负面提示词",
+      "properties": {
+        "Node name for S&R": "CLIPTextEncode"
+      },
+      "widgets_values": [
+        "畸形，毁容，解剖结构异常，多余肢体，器官融合，比例失调，多余手指，六根手指，模糊，文字，水印，低质量，低分辨率"
+      ],
+      "widgets_values_named": {
+        "text": "畸形，毁容，解剖结构异常，多余肢体，器官融合，比例失调，多余手指，六根手指，模糊，文字，水印，低质量，低分辨率"
+      }
+    },
+    {
+      "id": 5,
+      "type": "CLIPTextEncode",
+      "pos": [
+        1848.561644961947,
+        212.73642597723315
+      ],
+      "size": [
+        590,
+        245
+      ],
+      "flags": {},
+      "order": 13,
+      "mode": 0,
+      "inputs": [
+        {
+          "localized_name": "clip",
+          "name": "clip",
+          "type": "CLIP",
+          "link": 3
+        },
+        {
+          "localized_name": "文本",
+          "name": "text",
+          "type": "STRING",
+          "widget": {
+            "name": "text"
+          },
+          "link": 39
+        }
+      ],
+      "outputs": [
+        {
+          "localized_name": "条件",
+          "name": "CONDITIONING",
+          "type": "CONDITIONING",
+          "links": [
+            5
+          ]
+        }
+      ],
+      "title": "Z-Image 模板提示词（由两项输入节点自动生成）",
+      "properties": {
+        "Node name for S&R": "CLIPTextEncode"
+      },
+      "widgets_values": [
+        ""
+      ],
+      "widgets_values_named": {
+        "text": ""
+      }
+    },
+    {
+      "id": 7,
+      "type": "EmptyLatentImage",
+      "pos": [
+        2495.2518815859444,
+        86.07448858235344
+      ],
+      "size": [
+        330,
+        110
+      ],
+      "flags": {},
+      "order": 5,
+      "mode": 0,
+      "inputs": [
+        {
+          "localized_name": "宽度",
+          "name": "width",
+          "type": "INT",
+          "widget": {
+            "name": "width"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "高度",
+          "name": "height",
+          "type": "INT",
+          "widget": {
+            "name": "height"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "批量大小",
+          "name": "batch_size",
+          "type": "INT",
+          "widget": {
+            "name": "batch_size"
+          },
+          "link": null
+        }
+      ],
+      "outputs": [
+        {
+          "localized_name": "Latent",
+          "name": "LATENT",
+          "type": "LATENT",
+          "links": [
+            7
+          ]
+        }
+      ],
+      "title": "Z-Image 原尺寸 1088×1920",
+      "properties": {
+        "Node name for S&R": "EmptyLatentImage"
+      },
+      "widgets_values": [
+        1088,
+        1920,
+        1
+      ],
+      "widgets_values_named": {
+        "width": 1088,
+        "height": 1920,
+        "batch_size": 1
+      }
+    },
+    {
+      "id": 35,
+      "type": "PreviewImage",
+      "pos": [
+        593.3158810495379,
+        786.2027532894109
+      ],
+      "size": [
+        300,
+        250
+      ],
+      "flags": {},
+      "order": 26,
+      "mode": 0,
+      "inputs": [
+        {
+          "localized_name": "图像",
+          "name": "images",
+          "type": "IMAGE",
+          "link": 49
+        }
+      ],
+      "outputs": [
+        {
+          "localized_name": "images",
+          "name": "images",
+          "type": "IMAGE",
+          "links": null
+        }
+      ],
+      "title": "检查：传给 NoobAI 的只有骨架",
+      "properties": {
+        "Node name for S&R": "PreviewImage"
+      },
+      "widgets_values": [],
+      "widgets_values_named": {}
+    },
+    {
+      "id": 38,
+      "type": "ImageScaleBy",
+      "pos": [
+        942.9744360351955,
+        1075.9462449514658
+      ],
+      "size": [
+        420,
+        145
+      ],
+      "flags": {},
+      "order": 31,
+      "mode": 0,
+      "inputs": [
+        {
+          "localized_name": "图像",
+          "name": "image",
+          "type": "IMAGE",
+          "link": 52
+        },
+        {
+          "localized_name": "缩放算法",
+          "name": "upscale_method",
+          "type": "COMBO",
+          "widget": {
+            "name": "upscale_method"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "缩放系数",
+          "name": "scale_by",
+          "type": "FLOAT",
+          "widget": {
+            "name": "scale_by"
+          },
+          "link": null
+        }
+      ],
+      "outputs": [
+        {
+          "localized_name": "图像",
+          "name": "IMAGE",
+          "type": "IMAGE",
+          "links": [
+            53
+          ]
+        }
+      ],
+      "title": "Lanczos 缩至 0.5×（最终相对首图 2×）",
+      "properties": {
+        "Node name for S&R": "ImageScaleBy"
+      },
+      "widgets_values": [
+        "lanczos",
+        0.5
+      ],
+      "widgets_values_named": {
+        "upscale_method": "lanczos",
+        "scale_by": 0.5
+      }
+    },
+    {
+      "id": 36,
+      "type": "UpscaleModelLoader",
+      "pos": [
+        945.383220143003,
+        957.5054424851384
+      ],
+      "size": [
+        420,
+        65
+      ],
+      "flags": {},
+      "order": 7,
+      "mode": 0,
+      "inputs": [
+        {
+          "localized_name": "模型名称",
+          "name": "model_name",
+          "type": "COMBO",
+          "widget": {
+            "name": "model_name"
+          },
+          "link": null
+        }
+      ],
+      "outputs": [
+        {
+          "localized_name": "放大模型",
+          "name": "UPSCALE_MODEL",
+          "type": "UPSCALE_MODEL",
+          "links": [
+            51
+          ]
+        }
+      ],
+      "title": "动漫超分模型：RealESRGAN 4×",
+      "properties": {
+        "Node name for S&R": "UpscaleModelLoader"
+      },
+      "widgets_values": [
+        "RealESRGAN_x4plus_anime_6B.pth"
+      ],
+      "widgets_values_named": {
+        "model_name": "RealESRGAN_x4plus_anime_6B.pth"
+      }
+    },
+    {
+      "id": 37,
+      "type": "ImageUpscaleWithModel",
+      "pos": [
+        950.7293237803957,
+        789.9557822154788
+      ],
+      "size": [
+        420,
+        110
+      ],
+      "flags": {},
+      "order": 30,
+      "mode": 0,
+      "inputs": [
+        {
+          "localized_name": "放大模型",
+          "name": "upscale_model",
+          "type": "UPSCALE_MODEL",
+          "link": 51
+        },
+        {
+          "localized_name": "图像",
+          "name": "image",
+          "type": "IMAGE",
+          "link": 50
+        }
+      ],
+      "outputs": [
+        {
+          "localized_name": "图像",
+          "name": "IMAGE",
+          "type": "IMAGE",
+          "links": [
+            52
+          ]
+        }
+      ],
+      "title": "RealESRGAN 动漫超分 4×（不扩散重绘）",
+      "properties": {
+        "Node name for S&R": "ImageUpscaleWithModel"
+      }
+    },
+    {
+      "id": 17,
+      "type": "CLIPTextEncode",
+      "pos": [
+        1419.960259786069,
+        1258.4692096430808
+      ],
+      "size": [
+        850,
+        190
+      ],
+      "flags": {},
+      "order": 18,
+      "mode": 0,
+      "inputs": [
+        {
+          "localized_name": "clip",
+          "name": "clip",
+          "type": "CLIP",
+          "link": 21
+        },
+        {
+          "localized_name": "文本",
+          "name": "text",
+          "type": "STRING",
+          "widget": {
+            "name": "text"
+          },
+          "link": null
+        }
+      ],
+      "outputs": [
+        {
+          "localized_name": "条件",
+          "name": "CONDITIONING",
+          "type": "CONDITIONING",
+          "links": [
+            24
+          ]
+        }
+      ],
+      "title": "NoobAI 负面标签",
+      "properties": {
+        "Node name for S&R": "CLIPTextEncode"
+      },
+      "widgets_values": [
+        "worst quality, old, early, low quality, lowres, signature, username, logo, text, bad anatomy, bad hands, mutated hands, extra fingers, missing fingers, extra limbs, deformed, sketch, rough sketch, messy lineart, multiple outlines, double outline, ghosting, chromatic aberration, overexposed, washed out, harsh shading, grainy"
+      ],
+      "widgets_values_named": {
+        "text": "worst quality, old, early, low quality, lowres, signature, username, logo, text, bad anatomy, bad hands, mutated hands, extra fingers, missing fingers, extra limbs, deformed, sketch, rough sketch, messy lineart, multiple outlines, double outline, ghosting, chromatic aberration, overexposed, washed out, harsh shading, grainy"
+      }
+    },
+    {
+      "id": 28,
+      "type": "ZImageNoobAIPromptBridge",
+      "pos": [
+        30.997538457870316,
+        68.824265203112
+      ],
+      "size": [
+        680,
+        340
+      ],
+      "flags": {},
+      "order": 8,
+      "mode": 0,
+      "inputs": [
+        {
+          "localized_name": "simple_description",
+          "name": "simple_description",
+          "type": "STRING",
+          "widget": {
+            "name": "simple_description"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "character_tag",
+          "name": "character_tag",
+          "type": "STRING",
+          "widget": {
+            "name": "character_tag"
+          },
+          "link": null
+        }
+      ],
+      "outputs": [
+        {
+          "localized_name": "z_template_prompt",
+          "name": "z_template_prompt",
+          "type": "STRING",
+          "links": [
+            39
+          ]
+        },
+        {
+          "localized_name": "simple_description",
+          "name": "simple_description",
+          "type": "STRING",
+          "links": [
+            41
+          ]
+        },
+        {
+          "localized_name": "character_tag",
+          "name": "character_tag",
+          "type": "STRING",
+          "links": [
+            42
+          ]
+        }
+      ],
+      "title": "唯一需要修改：简单描述 + 人物标签",
+      "properties": {
+        "Node name for S&R": "ZImageNoobAIPromptBridge"
+      },
+      "widgets_values": [
+        "两个人并排站在学校走廊，各占画面约一半，穿着过膝袜，双手抬到胸前做猫爪握拳姿势，闭嘴微笑，略带得意地看向镜头，全身构图，轻微仰视",
+        "(momoi \\(blue archive\\):1.2), (midori \\(blue archive\\):1.2)"
+      ],
+      "widgets_values_named": {
+        "simple_description": "两个人并排站在学校走廊，各占画面约一半，穿着过膝袜，双手抬到胸前做猫爪握拳姿势，闭嘴微笑，略带得意地看向镜头，全身构图，轻微仰视",
+        "character_tag": "(momoi \\(blue archive\\):1.2), (midori \\(blue archive\\):1.2)"
+      },
+      "color": "#24344d",
+      "bgcolor": "#354d70"
+    },
+    {
+      "id": 27,
+      "type": "Note",
+      "pos": [
+        32.683363154195206,
+        451.5974188389221
+      ],
+      "size": [
+        676.016495391302,
+        205.64281259227323
+      ],
+      "flags": {},
+      "order": 9,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [],
+      "properties": {},
+      "widgets_values": [
+        "只修改输入区的两项内容：简单中文描述 + 人物标签。\nZ-Image 只负责生成构图模板；DWPose 只提取人体骨架，不把 Z-Image 的衣服、发型、颜色或纹理传给 NoobAI。\nNoobAI 从空 Latent（denoise 1.0）重新生成：没写衣服时依靠人物标签生成默认服装；明确写了服装时由 Qwen 转成动态标签。\n紫色完整提示词节点保持“始终跟随简单输入”：修改描述或人物标签后会自动重新生成完整提示词，不会继续使用旧锁定内容。\n需要模型：models\\controlnet\\openpose_pre.safetensors\n骨架开关：先选‘生成并保存新骨架’运行一次；随后切到‘复用上次骨架’，即可只修改 Qwen 结果中的完整提示词并反复运行 NoobAI。复用模式会完全跳过 Z-Image 和 DWPose。"
+      ],
+      "widgets_values_named": {
+        "text": "只修改输入区的两项内容：简单中文描述 + 人物标签。\nZ-Image 只负责生成构图模板；DWPose 只提取人体骨架，不把 Z-Image 的衣服、发型、颜色或纹理传给 NoobAI。\nNoobAI 从空 Latent（denoise 1.0）重新生成：没写衣服时依靠人物标签生成默认服装；明确写了服装时由 Qwen 转成动态标签。\n紫色完整提示词节点保持“始终跟随简单输入”：修改描述或人物标签后会自动重新生成完整提示词，不会继续使用旧锁定内容。\n需要模型：models\\controlnet\\openpose_pre.safetensors"
+      },
+      "color": "#432",
+      "bgcolor": "#653"
+    },
+    {
+      "id": 8,
+      "type": "KSampler",
+      "pos": [
+        2495.9924112984427,
+        240.24708593915554
+      ],
+      "size": [
+        330,
+        445
+      ],
+      "flags": {},
+      "order": 16,
+      "mode": 0,
+      "inputs": [
+        {
+          "localized_name": "模型",
+          "name": "model",
+          "type": "MODEL",
+          "link": 2
+        },
+        {
+          "localized_name": "正面条件",
+          "name": "positive",
+          "type": "CONDITIONING",
+          "link": 5
+        },
+        {
+          "localized_name": "负面条件",
+          "name": "negative",
+          "type": "CONDITIONING",
+          "link": 6
+        },
+        {
+          "localized_name": "Latent图像",
+          "name": "latent_image",
+          "type": "LATENT",
+          "link": 7
+        },
+        {
+          "localized_name": "种子",
+          "name": "seed",
+          "type": "INT",
+          "widget": {
+            "name": "seed"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "步数",
+          "name": "steps",
+          "type": "INT",
+          "widget": {
+            "name": "steps"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "cfg",
+          "name": "cfg",
+          "type": "FLOAT",
+          "widget": {
+            "name": "cfg"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "采样器名称",
+          "name": "sampler_name",
+          "type": "COMBO",
+          "widget": {
+            "name": "sampler_name"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "调度器",
+          "name": "scheduler",
+          "type": "COMBO",
+          "widget": {
+            "name": "scheduler"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "降噪",
+          "name": "denoise",
+          "type": "FLOAT",
+          "widget": {
+            "name": "denoise"
+          },
+          "link": null
+        }
+      ],
+      "outputs": [
+        {
+          "localized_name": "Latent",
+          "name": "LATENT",
+          "type": "LATENT",
+          "links": [
+            8
+          ]
+        }
+      ],
+      "title": "Z-Image 采样（base：9 steps / CFG 1）",
+      "properties": {
+        "Node name for S&R": "KSampler"
+      },
+      "widgets_values": [
+        549521732267645,
+        "randomize",
+        9,
+        1,
+        "euler",
+        "simple",
+        1
+      ],
+      "widgets_values_named": {
+        "seed": 549521732267645,
+        "control_after_generate": "randomize",
+        "steps": 9,
+        "cfg": 1,
+        "sampler_name": "euler",
+        "scheduler": "simple",
+        "denoise": 1
+      }
+    },
+    {
+      "id": 30,
+      "type": "IllustriousPromptEditor",
+      "pos": [
+        743.44681443967,
+        240.17450896831042
+      ],
+      "size": [
+        650,
+        410
+      ],
+      "flags": {},
+      "order": 17,
+      "mode": 0,
+      "inputs": [
+        {
+          "localized_name": "model_prompt",
+          "name": "model_prompt",
+          "shape": 7,
+          "type": "STRING",
+          "link": 43
+        },
+        {
+          "localized_name": "source_mode",
+          "name": "source_mode",
+          "type": "COMBO",
+          "widget": {
+            "name": "source_mode"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "full_prompt",
+          "name": "full_prompt",
+          "type": "STRING",
+          "widget": {
+            "name": "full_prompt"
+          },
+          "link": null
+        }
+      ],
+      "outputs": [
+        {
+          "localized_name": "final_prompt",
+          "name": "final_prompt",
+          "type": "STRING",
+          "links": [
+            40
+          ]
+        }
+      ],
+      "title": "Qwen 结果：始终跟随输入（保持同步）",
+      "properties": {
+        "Node name for S&R": "IllustriousPromptEditor"
+      },
+      "widgets_values": [
+        "始终跟随简单输入（变更时调用文本模型）",
+        "masterpiece, best quality, newest, (momoi \\(blue archive\\):1.2), (midori \\(blue archive\\):1.2), jyt, blue archive animation style, 2girls, multiple girls, standing together, side-by-side, equal focus, balanced composition, each girl occupying half of the frame, full body, thighhighs, both hands raised, fists near chest, cat paw pose, looking at viewer, closed mouth, closed-mouth smile, smug, from below, low angle, upward camera angle, school hallway, indoors, clean lineart, flat color, cel shading"
+      ],
+      "widgets_values_named": {
+        "source_mode": "始终跟随简单输入（变更时调用文本模型）",
+        "full_prompt": "masterpiece, best quality, newest, (momoi \\(blue archive\\):1.2), (midori \\(blue archive\\):1.2), jyt, blue archive animation style, 2girls, multiple girls, standing together, side-by-side, equal focus, balanced composition, each girl occupying half of the frame, full body, thighhighs, both hands raised, fists near chest, cat paw pose, looking at viewer, closed mouth, closed-mouth smile, smug, from below, low angle, upward camera angle, school hallway, indoors, clean lineart, flat color, cel shading"
+      },
+      "color": "#3b2f4a",
+      "bgcolor": "#59466f"
+    },
+    {
+      "id": 33,
+      "type": "ControlNetApplyAdvanced",
+      "pos": [
+        2911.8564118804093,
+        820.6035656312434
+      ],
+      "size": [
+        360,
+        190
+      ],
+      "flags": {},
+      "order": 25,
+      "mode": 0,
+      "inputs": [
+        {
+          "localized_name": "正面条件",
+          "name": "positive",
+          "type": "CONDITIONING",
+          "link": 22
+        },
+        {
+          "localized_name": "负面条件",
+          "name": "negative",
+          "type": "CONDITIONING",
+          "link": 24
+        },
+        {
+          "localized_name": "ControlNet",
+          "name": "control_net",
+          "type": "CONTROL_NET",
+          "link": 44
+        },
+        {
+          "localized_name": "图像",
+          "name": "image",
+          "type": "IMAGE",
+          "link": 45
+        },
+        {
+          "localized_name": "vae",
+          "name": "vae",
+          "shape": 7,
+          "type": "VAE",
+          "link": null
+        },
+        {
+          "localized_name": "强度",
+          "name": "strength",
+          "type": "FLOAT",
+          "widget": {
+            "name": "strength"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "开始百分比",
+          "name": "start_percent",
+          "type": "FLOAT",
+          "widget": {
+            "name": "start_percent"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "结束百分比",
+          "name": "end_percent",
+          "type": "FLOAT",
+          "widget": {
+            "name": "end_percent"
+          },
+          "link": null
+        }
+      ],
+      "outputs": [
+        {
+          "localized_name": "正面条件",
+          "name": "positive",
+          "type": "CONDITIONING",
+          "slot_index": 0,
+          "links": [
+            46
+          ]
+        },
+        {
+          "localized_name": "负面条件",
+          "name": "negative",
+          "type": "CONDITIONING",
+          "slot_index": 1,
+          "links": [
+            47
+          ]
+        }
+      ],
+      "title": "OpenPose 只管前 65%：把后段还给平涂 LoRA",
+      "properties": {
+        "Node name for S&R": "ControlNetApplyAdvanced"
+      },
+      "widgets_values": [
+        0.8,
+        0,
+        0.65
+      ],
+      "widgets_values_named": {
+        "strength": 0.8,
+        "start_percent": 0,
+        "end_percent": 0.65
+      }
+    },
+    {
+      "id": 34,
+      "type": "EmptyLatentImage",
+      "pos": [
+        2914.9483317710947,
+        1054.2818692010642
+      ],
+      "size": [
+        351.95270636102805,
+        115.99113815628698
+      ],
+      "flags": {},
+      "order": 6,
+      "mode": 0,
+      "inputs": [
+        {
+          "localized_name": "宽度",
+          "name": "width",
+          "type": "INT",
+          "widget": {
+            "name": "width"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "高度",
+          "name": "height",
+          "type": "INT",
+          "widget": {
+            "name": "height"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "批量大小",
+          "name": "batch_size",
+          "type": "INT",
+          "widget": {
+            "name": "batch_size"
+          },
+          "link": null
+        }
+      ],
+      "outputs": [
+        {
+          "localized_name": "Latent",
+          "name": "LATENT",
+          "type": "LATENT",
+          "slot_index": 0,
+          "links": [
+            27
+          ]
+        }
+      ],
+      "title": "关键：空 Latent，不继承 Z-Image 衣服",
+      "properties": {
+        "Node name for S&R": "EmptyLatentImage"
+      },
+      "widgets_values": [
+        832,
+        1472,
+        1
+      ],
+      "widgets_values_named": {
+        "width": 832,
+        "height": 1472,
+        "batch_size": 1
+      }
+    },
+    {
+      "id": 19,
+      "type": "KSampler",
+      "pos": [
+        3304.7299767310133,
+        837.5648202191314
+      ],
+      "size": [
+        385.6685546875,
+        445
+      ],
+      "flags": {},
+      "order": 27,
+      "mode": 0,
+      "inputs": [
+        {
+          "localized_name": "模型",
+          "name": "model",
+          "type": "MODEL",
+          "link": 18
+        },
+        {
+          "localized_name": "正面条件",
+          "name": "positive",
+          "type": "CONDITIONING",
+          "link": 46
+        },
+        {
+          "localized_name": "负面条件",
+          "name": "negative",
+          "type": "CONDITIONING",
+          "link": 47
+        },
+        {
+          "localized_name": "Latent图像",
+          "name": "latent_image",
+          "type": "LATENT",
+          "link": 27
+        },
+        {
+          "localized_name": "种子",
+          "name": "seed",
+          "type": "INT",
+          "widget": {
+            "name": "seed"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "步数",
+          "name": "steps",
+          "type": "INT",
+          "widget": {
+            "name": "steps"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "cfg",
+          "name": "cfg",
+          "type": "FLOAT",
+          "widget": {
+            "name": "cfg"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "采样器名称",
+          "name": "sampler_name",
+          "type": "COMBO",
+          "widget": {
+            "name": "sampler_name"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "调度器",
+          "name": "scheduler",
+          "type": "COMBO",
+          "widget": {
+            "name": "scheduler"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "降噪",
+          "name": "denoise",
+          "type": "FLOAT",
+          "widget": {
+            "name": "denoise"
+          },
+          "link": null
+        }
+      ],
+      "outputs": [
+        {
+          "localized_name": "Latent",
+          "name": "LATENT",
+          "type": "LATENT",
+          "links": [
+            29
+          ]
+        }
+      ],
+      "title": "NoobAI：平涂工作流原参数 Euler / 16 steps / CFG 3.5",
+      "properties": {
+        "Node name for S&R": "KSampler"
+      },
+      "widgets_values": [
+        246813579,
+        "fixed",
+        16,
+        3.5,
+        "euler",
+        "normal",
+        1
+      ],
+      "widgets_values_named": {
+        "seed": 246813579,
+        "control_after_generate": "fixed",
+        "steps": 16,
+        "cfg": 3.5,
+        "sampler_name": "euler",
+        "scheduler": "normal",
+        "denoise": 1
+      }
+    },
+    {
+      "id": 32,
+      "type": "ControlNetLoader",
+      "pos": [
+        2913.7606777991427,
+        1219.7729202087253
+      ],
+      "size": [
+        354.21566866951434,
+        61.00578600579047
+      ],
+      "flags": {},
+      "order": 0,
+      "mode": 0,
+      "inputs": [
+        {
+          "localized_name": "ControlNet名称",
+          "name": "control_net_name",
+          "type": "COMBO",
+          "widget": {
+            "name": "control_net_name"
+          },
+          "link": null
+        }
+      ],
+      "outputs": [
+        {
+          "localized_name": "ControlNet",
+          "name": "CONTROL_NET",
+          "type": "CONTROL_NET",
+          "slot_index": 0,
+          "links": [
+            44
+          ]
+        }
+      ],
+      "title": "NoobAI OpenPose ControlNet",
+      "properties": {
+        "Node name for S&R": "ControlNetLoader"
+      },
+      "widgets_values": [
+        "openpose_pre.safetensors"
+      ],
+      "widgets_values_named": {
+        "control_net_name": "openpose_pre.safetensors"
+      }
+    },
+    {
+      "id": 12,
+      "type": "ImageScale",
+      "pos": [
+        3656.5014637725208,
+        108.79445640723665
+      ],
+      "size": [
+        341.99375,
+        135
+      ],
+      "flags": {},
+      "order": 23,
+      "mode": 0,
+      "inputs": [
+        {
+          "localized_name": "图像",
+          "name": "image",
+          "type": "IMAGE",
+          "link": 12
+        },
+        {
+          "localized_name": "缩放算法",
+          "name": "upscale_method",
+          "type": "COMBO",
+          "widget": {
+            "name": "upscale_method"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "宽度",
+          "name": "width",
+          "type": "INT",
+          "widget": {
+            "name": "width"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "高度",
+          "name": "height",
+          "type": "INT",
+          "widget": {
+            "name": "height"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "裁剪",
+          "name": "crop",
+          "type": "COMBO",
+          "widget": {
+            "name": "crop"
+          },
+          "link": null
+        }
+      ],
+      "outputs": [
+        {
+          "localized_name": "图像",
+          "name": "IMAGE",
+          "type": "IMAGE",
+          "links": [
+            13
+          ]
+        }
+      ],
+      "title": "仅缩放供 DWPose 提取（不送入 NoobAI VAE）",
+      "properties": {
+        "Node name for S&R": "ImageScale"
+      },
+      "widgets_values": [
+        "lanczos",
+        832,
+        1472,
+        "disabled"
+      ],
+      "widgets_values_named": {
+        "upscale_method": "lanczos",
+        "width": 832,
+        "height": 1472,
+        "crop": "disabled"
+      }
+    },
+    {
+      "id": 31,
+      "type": "DWPreprocessor",
+      "pos": [
+        3630.2377420076177,
+        323.9563633575393
+      ],
+      "size": [
+        390,
+        300
+      ],
+      "flags": {},
+      "order": 24,
+      "mode": 0,
+      "inputs": [
+        {
+          "localized_name": "image",
+          "name": "image",
+          "type": "IMAGE",
+          "link": 13
+        },
+        {
+          "localized_name": "detect_hand",
+          "name": "detect_hand",
+          "shape": 7,
+          "type": "COMBO",
+          "widget": {
+            "name": "detect_hand"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "detect_body",
+          "name": "detect_body",
+          "shape": 7,
+          "type": "COMBO",
+          "widget": {
+            "name": "detect_body"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "detect_face",
+          "name": "detect_face",
+          "shape": 7,
+          "type": "COMBO",
+          "widget": {
+            "name": "detect_face"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "resolution",
+          "name": "resolution",
+          "shape": 7,
+          "type": "INT",
+          "widget": {
+            "name": "resolution"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "bbox_detector",
+          "name": "bbox_detector",
+          "shape": 7,
+          "type": "COMBO",
+          "widget": {
+            "name": "bbox_detector"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "pose_estimator",
+          "name": "pose_estimator",
+          "shape": 7,
+          "type": "COMBO",
+          "widget": {
+            "name": "pose_estimator"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "scale_stick_for_xinsr_cn",
+          "name": "scale_stick_for_xinsr_cn",
+          "shape": 7,
+          "type": "COMBO",
+          "widget": {
+            "name": "scale_stick_for_xinsr_cn"
+          },
+          "link": null
+        }
+      ],
+      "outputs": [
+        {
+          "localized_name": "图像",
+          "name": "IMAGE",
+          "type": "IMAGE",
+          "slot_index": 0,
+          "links": [
+            54
+          ]
+        },
+        {
+          "localized_name": "POSE_KEYPOINT",
+          "name": "POSE_KEYPOINT",
+          "type": "POSE_KEYPOINT",
+          "slot_index": 1,
+          "links": null
+        }
+      ],
+      "title": "只提取姿势：DWPose（隔离 Z-Image 外观）",
+      "properties": {
+        "Node name for S&R": "DWPreprocessor"
+      },
+      "widgets_values": [
+        "enable",
+        "enable",
+        "enable",
+        1024,
+        "yolox_l.onnx",
+        "dw-ll_ucoco_384.onnx",
+        "disable"
+      ],
+      "widgets_values_named": {
+        "detect_hand": "enable",
+        "detect_body": "enable",
+        "detect_face": "enable",
+        "resolution": 1024,
+        "bbox_detector": "yolox_l.onnx",
+        "pose_estimator": "dw-ll_ucoco_384.onnx",
+        "scale_stick_for_xinsr_cn": "disable"
+      }
+    },
+    {
+      "id": 21,
+      "type": "VAEDecode",
+      "pos": [
+        3731.69595573914,
+        845.1408937980094
+      ],
+      "size": [
+        328.3697265625,
+        80
+      ],
+      "flags": {},
+      "order": 28,
+      "mode": 0,
+      "inputs": [
+        {
+          "localized_name": "Latent",
+          "name": "samples",
+          "type": "LATENT",
+          "link": 29
+        },
+        {
+          "localized_name": "vae",
+          "name": "vae",
+          "type": "VAE",
+          "link": 31
+        }
+      ],
+      "outputs": [
+        {
+          "localized_name": "图像",
+          "name": "IMAGE",
+          "type": "IMAGE",
+          "links": [
+            38,
+            50
+          ]
+        }
+      ],
+      "title": "NoobAI 首轮解码（同时输出原图与 2× 超分）",
+      "properties": {
+        "Node name for S&R": "VAEDecode"
+      }
+    },
+    {
+      "id": 26,
+      "type": "LayerUtility: PurgeVRAM",
+      "pos": [
+        3730.799282201286,
+        983.8312100843294
+      ],
+      "size": [
+        330,
+        110
+      ],
+      "flags": {},
+      "order": 29,
+      "mode": 0,
+      "inputs": [
+        {
+          "localized_name": "任意内容",
+          "name": "anything",
+          "type": "*",
+          "link": 38
+        },
+        {
+          "localized_name": "清除缓存",
+          "name": "purge_cache",
+          "type": "BOOLEAN",
+          "widget": {
+            "name": "purge_cache"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "清除模型",
+          "name": "purge_models",
+          "type": "BOOLEAN",
+          "widget": {
+            "name": "purge_models"
+          },
+          "link": null
+        }
+      ],
+      "outputs": [],
+      "title": "完成后释放 NoobAI / VAE 显存",
+      "properties": {
+        "Node name for S&R": "LayerUtility: PurgeVRAM"
+      },
+      "widgets_values": [
+        true,
+        true
+      ],
+      "widgets_values_named": {
+        "purge_cache": true,
+        "purge_models": true
+      },
+      "color": "rgba(38, 73, 116, 0.7)"
+    },
+    {
+      "id": 40,
+      "type": "ReusablePoseCache",
+      "pos": [
+        3240,
+        300
+      ],
+      "size": [
+        360,
+        150
+      ],
+      "flags": {},
+      "order": 34,
+      "mode": 0,
+      "inputs": [
+        {
+          "localized_name": "mode",
+          "name": "mode",
+          "type": "COMBO",
+          "widget": {
+            "name": "mode"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "pose_image",
+          "name": "pose_image",
+          "type": "IMAGE",
+          "link": 54
+        }
+      ],
+      "outputs": [
+        {
+          "localized_name": "pose_image",
+          "name": "pose_image",
+          "type": "IMAGE",
+          "links": [
+            45,
+            49
+          ]
+        }
+      ],
+      "title": "骨架开关：生成新骨架 / 复用上次骨架",
+      "properties": {
+        "Node name for S&R": "ReusablePoseCache"
+      },
+      "widgets_values": [
+        "生成并保存新骨架（运行 Z-Image）"
+      ],
+      "widgets_values_named": {
+        "mode": "生成并保存新骨架（运行 Z-Image）"
+      },
+      "color": "#35583f",
+      "bgcolor": "#456f50"
+    }
+  ],
+  "links": [
+    [
+      2,
+      1,
+      0,
+      8,
+      0,
+      "MODEL"
+    ],
+    [
+      3,
+      2,
+      0,
+      5,
+      0,
+      "CLIP"
+    ],
+    [
+      4,
+      2,
+      0,
+      6,
+      0,
+      "CLIP"
+    ],
+    [
+      5,
+      5,
+      0,
+      8,
+      1,
+      "CONDITIONING"
+    ],
+    [
+      6,
+      6,
+      0,
+      8,
+      2,
+      "CONDITIONING"
+    ],
+    [
+      7,
+      7,
+      0,
+      8,
+      3,
+      "LATENT"
+    ],
+    [
+      8,
+      8,
+      0,
+      9,
+      0,
+      "LATENT"
+    ],
+    [
+      9,
+      3,
+      0,
+      9,
+      1,
+      "VAE"
+    ],
+    [
+      10,
+      9,
+      0,
+      10,
+      0,
+      "*"
+    ],
+    [
+      12,
+      10,
+      0,
+      12,
+      0,
+      "*"
+    ],
+    [
+      13,
+      12,
+      0,
+      31,
+      0,
+      "IMAGE"
+    ],
+    [
+      14,
+      13,
+      0,
+      14,
+      0,
+      "MODEL"
+    ],
+    [
+      15,
+      13,
+      1,
+      14,
+      1,
+      "CLIP"
+    ],
+    [
+      16,
+      14,
+      0,
+      15,
+      0,
+      "MODEL"
+    ],
+    [
+      17,
+      14,
+      1,
+      15,
+      1,
+      "CLIP"
+    ],
+    [
+      18,
+      15,
+      0,
+      19,
+      0,
+      "MODEL"
+    ],
+    [
+      20,
+      15,
+      1,
+      16,
+      0,
+      "CLIP"
+    ],
+    [
+      21,
+      15,
+      1,
+      17,
+      0,
+      "CLIP"
+    ],
+    [
+      22,
+      16,
+      0,
+      33,
+      0,
+      "CONDITIONING"
+    ],
+    [
+      24,
+      17,
+      0,
+      33,
+      1,
+      "CONDITIONING"
+    ],
+    [
+      27,
+      34,
+      0,
+      19,
+      3,
+      "LATENT"
+    ],
+    [
+      29,
+      19,
+      0,
+      21,
+      0,
+      "LATENT"
+    ],
+    [
+      31,
+      13,
+      2,
+      21,
+      1,
+      "VAE"
+    ],
+    [
+      38,
+      21,
+      0,
+      26,
+      0,
+      "*"
+    ],
+    [
+      39,
+      28,
+      0,
+      5,
+      1,
+      "STRING"
+    ],
+    [
+      40,
+      30,
+      0,
+      16,
+      1,
+      "STRING"
+    ],
+    [
+      41,
+      28,
+      1,
+      29,
+      0,
+      "STRING"
+    ],
+    [
+      42,
+      28,
+      2,
+      29,
+      1,
+      "STRING"
+    ],
+    [
+      43,
+      29,
+      0,
+      30,
+      0,
+      "STRING"
+    ],
+    [
+      44,
+      32,
+      0,
+      33,
+      2,
+      "CONTROL_NET"
+    ],
+    [
+      45,
+      40,
+      0,
+      33,
+      3,
+      "IMAGE"
+    ],
+    [
+      46,
+      33,
+      0,
+      19,
+      1,
+      "CONDITIONING"
+    ],
+    [
+      47,
+      33,
+      1,
+      19,
+      2,
+      "CONDITIONING"
+    ],
+    [
+      49,
+      40,
+      0,
+      35,
+      0,
+      "IMAGE"
+    ],
+    [
+      50,
+      21,
+      0,
+      37,
+      1,
+      "IMAGE"
+    ],
+    [
+      51,
+      36,
+      0,
+      37,
+      0,
+      "UPSCALE_MODEL"
+    ],
+    [
+      52,
+      37,
+      0,
+      38,
+      0,
+      "IMAGE"
+    ],
+    [
+      53,
+      38,
+      0,
+      39,
+      0,
+      "IMAGE"
+    ],
+    [
+      54,
+      31,
+      0,
+      40,
+      1,
+      "IMAGE"
+    ]
+  ],
+  "groups": [
+    {
+      "id": 5,
+      "title": "0. 输入：中文描述、人物标签与完整提示词",
+      "bounding": [
+        -0.6270557124632932,
+        -2.21403237568564,
+        1450,
+        700
+      ],
+      "color": "#4d6680",
+      "flags": {}
+    },
+    {
+      "id": 1,
+      "title": "1. Z-Image：只生成构图模板",
+      "bounding": [
+        1451.9138953824286,
+        -1.478429219224144,
+        1750,
+        700
+      ],
+      "color": "#3f789e",
+      "flags": {}
+    },
+    {
+      "id": 2,
+      "title": "2. 交接：DWPose 骨架 + 生成/复用开关",
+      "bounding": [
+        3204.2682559218947,
+        0.6741205324056417,
+        922.0058539942665,
+        697.6579207055065
+      ],
+      "color": "#756340",
+      "flags": {}
+    },
+    {
+      "id": 3,
+      "title": "3. NoobAI：底模 + JYT + BA 平涂编码",
+      "bounding": [
+        1379.960259786069,
+        698.7443984331932,
+        1449.9999999999998,
+        767.7820241389974
+      ],
+      "color": "#4d6680",
+      "flags": {}
+    },
+    {
+      "id": 4,
+      "title": "4. OpenPose 约束 + 空 Latent 独立生成",
+      "bounding": [
+        2835.171668999157,
+        700.8855151497729,
+        1294.2381720108351,
+        767.8080056953603
+      ],
+      "color": "#66734a",
+      "flags": {}
+    },
+    {
+      "id": 6,
+      "title": "5. RealESRGAN 平涂保真 2× 超分",
+      "bounding": [
+        -0.8476851849459557,
+        699.0686715244409,
+        1378.6927206447758,
+        774.951342090158
+      ],
+      "color": "#6f557f",
+      "flags": {}
+    }
+  ],
+  "config": {},
+  "extra": {
+    "ds": {
+      "scale": 0.6069570658369021,
+      "offset": [
+        -1488.3722417801869,
+        282.34804018744023
+      ]
+    },
+    "frontendVersion": "1.32.9",
+    "workflowRendererVersion": "LG"
+  },
+  "version": 0.4
+}
