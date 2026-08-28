@@ -148,49 +148,31 @@
     },
     {
       "id": 10,
-      "type": "LayerUtility: PurgeVRAM V2",
+      "type": "LazyImageVRAMPurge",
       "pos": [
         3245.7465497910116,
         109.80939439987282
       ],
       "size": [
         337.8921875,
-        120
+        82
       ],
       "flags": {},
       "order": 21,
       "mode": 0,
       "inputs": [
         {
-          "localized_name": "任意内容",
-          "name": "anything",
-          "type": "*",
+          "localized_name": "image",
+          "name": "image",
+          "type": "IMAGE",
           "link": 10
-        },
-        {
-          "localized_name": "清除缓存",
-          "name": "purge_cache",
-          "type": "BOOLEAN",
-          "widget": {
-            "name": "purge_cache"
-          },
-          "link": null
-        },
-        {
-          "localized_name": "清除模型",
-          "name": "purge_models",
-          "type": "BOOLEAN",
-          "widget": {
-            "name": "purge_models"
-          },
-          "link": null
         }
       ],
       "outputs": [
         {
-          "localized_name": "any",
-          "name": "any",
-          "type": "*",
+          "localized_name": "image",
+          "name": "image",
+          "type": "IMAGE",
           "links": [
             12
           ]
@@ -198,16 +180,9 @@
       ],
       "title": "关键：保留图像，卸载 Z-Image 再进入 NoobAI",
       "properties": {
-        "Node name for S&R": "LayerUtility: PurgeVRAM V2"
+        "Node name for S&R": "LazyImageVRAMPurge"
       },
-      "widgets_values": [
-        true,
-        true
-      ],
-      "widgets_values_named": {
-        "purge_cache": true,
-        "purge_models": true
-      },
+      "widgets_values": [],
       "color": "rgba(38, 73, 116, 0.7)"
     },
     {
@@ -2227,7 +2202,7 @@
       0,
       10,
       0,
-      "*"
+      "IMAGE"
     ],
     [
       12,
@@ -2235,7 +2210,7 @@
       0,
       12,
       0,
-      "*"
+      "IMAGE"
     ],
     [
       13,

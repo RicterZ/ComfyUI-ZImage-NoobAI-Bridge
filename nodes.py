@@ -765,6 +765,34 @@ class ReusablePoseCache:
         return {"ui": {"text": [status]}, "result": (selected,)}
 
 
+class LazyImageVRAMPurge:
+    """Unload ComfyUI models while forwarding an image downstream.
+
+    Unlike third-party purge nodes that declare ``OUTPUT_NODE = True``, this
+    node is deliberately not an output node.  Consequently a lazy downstream
+    switch can prune this node and the entire Z-Image branch in pose-reuse
+    mode.
+    """
+
+    @classmethod
+    def INPUT_TYPES(cls):
+        return {
+            "required": {
+                "image": ("IMAGE", {"forceInput": True}),
+            }
+        }
+
+    RETURN_TYPES = ("IMAGE",)
+    RETURN_NAMES = ("image",)
+    FUNCTION = "purge_and_forward"
+    CATEGORY = "image/control"
+    OUTPUT_NODE = False
+
+    def purge_and_forward(self, image):
+        _release_comfy_vram()
+        return (image,)
+
+
 NODE_CLASS_MAPPINGS = {
     "IllustriousNaturalLanguagePrompt": IllustriousNaturalLanguagePrompt,
     "WanVideoNaturalLanguagePrompt": WanVideoNaturalLanguagePrompt,
@@ -772,6 +800,7 @@ NODE_CLASS_MAPPINGS = {
     "NoobAIDynamicPromptCompiler": NoobAIDynamicPromptCompiler,
     "IllustriousPromptEditor": IllustriousPromptEditor,
     "ReusablePoseCache": ReusablePoseCache,
+    "LazyImageVRAMPurge": LazyImageVRAMPurge,
 }
 
 NODE_DISPLAY_NAME_MAPPINGS = {
@@ -781,4 +810,5 @@ NODE_DISPLAY_NAME_MAPPINGS = {
     "NoobAIDynamicPromptCompiler": "Qwen → NoobAI 动态标签（人物标签手填）",
     "IllustriousPromptEditor": "完整提示词（显示 / 编辑 / 锁定）",
     "ReusablePoseCache": "Z-Image 骨架开关（生成 / 复用）",
+    "LazyImageVRAMPurge": "图像直通并释放显存（支持懒跳过）",
 }

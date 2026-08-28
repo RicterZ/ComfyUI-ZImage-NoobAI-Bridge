@@ -118,13 +118,14 @@ ComfyUI/user/default/comfyui_nl_prompt_cache/last_openpose.png
 | `IllustriousNaturalLanguagePrompt` | 可配置的通用 Illustrious/NoobAI 自然语言转换节点 |
 | `IllustriousPromptEditor` | 显示、编辑、锁定或持续同步完整提示词；手动模式会懒阻断 LLM |
 | `ReusablePoseCache` | 保存最后一次 OpenPose 图，复用时懒阻断 Z-Image 与 DWPose |
+| `LazyImageVRAMPurge` | 生成新骨架时卸载 Z-Image；复用骨架时不会成为独立输出而强制运行上游 |
 | `WanVideoNaturalLanguagePrompt` | 把简短动作意图整理成 Wan2.2 图生视频提示词 |
 
 ## 常见问题
 
 ### 复用骨架时 Z-Image 仍然执行
 
-确认工作流中没有任何 `SaveImage` 或 `PreviewImage` 直接连接在 Z-Image 分支上。独立输出节点会强制执行它的上游，绕过骨架缓存的懒阻断设计。
+确认工作流中没有任何 `SaveImage`、`PreviewImage` 或声明为 `OUTPUT_NODE` 的显存清理节点直接连接在 Z-Image 分支上。独立输出节点会强制执行它的上游，绕过骨架缓存的懒阻断设计。仓库示例使用非输出型的 `LazyImageVRAMPurge`，不要把它替换成会强制执行的第三方清理节点。
 
 ### 第一次复用骨架时报错
 
