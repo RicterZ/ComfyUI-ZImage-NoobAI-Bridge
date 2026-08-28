@@ -85,6 +85,17 @@ ollama serve
 
 NoobAI 的 seed 已连接 ComfyUI 原生 `PrimitiveInt` 节点，并设为 `randomize`，每次 Queue 都会使用新种子。
 
+### DWPose 单人/双人参数
+
+在 DWPose 节点中按画面人数设置：
+
+| 画面 | `bbox_detector` | `pose_estimator` | `resolution` |
+| --- | --- | --- | --- |
+| 单人 | `None` | `dw-ll_ucoco_384.onnx` | `1024` |
+| 双人或多人 | `yolo_nas_l_fp16.onnx` | `dw-ll_ucoco_384.onnx` | `1024` |
+
+单人模式跳过人物框检测，适合跪坐、蜷缩和极端视角。双人模式需要检测并分离每个人物；首次选择 `yolo_nas_l_fp16.onnx` 时，`comfyui_controlnet_aux` 会自动下载模型。骨架预览全黑表示没有识别到人体，此时不要复用该骨架。
+
 ### 3. 复用骨架，只调整 NoobAI
 
 构图满意后设置：
