@@ -10,10 +10,7 @@
 git clone https://github.com/RicterZ/ComfyUI-ZImage-NoobAI-Bridge.git
 ```
 
-再通过 ComfyUI 扩展管理安装：
-
-- `comfyui_controlnet_aux`
-- `ComfyUI_LayerStyle`
+再通过 ComfyUI 扩展管理安装 `comfyui_controlnet_aux`。
 
 重启 ComfyUI，加载：
 

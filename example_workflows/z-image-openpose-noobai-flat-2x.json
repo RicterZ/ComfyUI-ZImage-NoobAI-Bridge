@@ -2114,8 +2114,7 @@
           "name": "IMAGE",
           "type": "IMAGE",
           "links": [
-            38,
-            50
+            38
           ]
         }
       ],
@@ -2126,57 +2125,41 @@
     },
     {
       "id": 26,
-      "type": "LayerUtility: PurgeVRAM",
+      "type": "LazyImageVRAMPurge",
       "pos": [
         3700.594034406798,
         972.9572943306682
       ],
       "size": [
         330,
-        110
+        82
       ],
       "flags": {},
       "order": 28,
       "mode": 0,
       "inputs": [
         {
-          "localized_name": "任意内容",
-          "name": "anything",
-          "type": "*",
+          "localized_name": "image",
+          "name": "image",
+          "type": "IMAGE",
           "link": 38
-        },
-        {
-          "localized_name": "清除缓存",
-          "name": "purge_cache",
-          "type": "BOOLEAN",
-          "widget": {
-            "name": "purge_cache"
-          },
-          "link": null
-        },
-        {
-          "localized_name": "清除模型",
-          "name": "purge_models",
-          "type": "BOOLEAN",
-          "widget": {
-            "name": "purge_models"
-          },
-          "link": null
         }
       ],
-      "outputs": [],
-      "title": "完成后释放 NoobAI / VAE 显存",
-      "properties": {
-        "Node name for S&R": "LayerUtility: PurgeVRAM"
-      },
-      "widgets_values": [
-        true,
-        true
+      "outputs": [
+        {
+          "localized_name": "image",
+          "name": "image",
+          "type": "IMAGE",
+          "links": [
+            50
+          ]
+        }
       ],
-      "widgets_values_named": {
-        "purge_cache": true,
-        "purge_models": true
+      "title": "NoobAI 解码后释放模型显存，再进入超分",
+      "properties": {
+        "Node name for S&R": "LazyImageVRAMPurge"
       },
+      "widgets_values": [],
       "color": "rgba(38, 73, 116, 0.7)"
     },
     {
@@ -2412,7 +2395,7 @@
       0,
       26,
       0,
-      "*"
+      "IMAGE"
     ],
     [
       39,
@@ -2496,7 +2479,7 @@
     ],
     [
       50,
-      21,
+      26,
       0,
       37,
       1,

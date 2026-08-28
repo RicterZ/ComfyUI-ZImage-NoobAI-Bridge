@@ -1,6 +1,6 @@
 [project]
 name = "comfyui-zimage-noobai-bridge"
-version = "0.2.0"
+version = "0.2.1"
 description = "Natural-language prompt tools and a pose-only Z-Image to NoobAI bridge for ComfyUI."
 readme = "README.md"
 requires-python = ">=3.10"
