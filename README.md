@@ -25,24 +25,49 @@ example_workflows/z-image-openpose-noobai-flat-2x.json
 
 ## 准备模型
 
-示例工作流使用以下文件名。可以换成同架构模型，但需要在对应加载节点重新选择。
+示例工作流需要手动准备下面 8 个模型文件。路径均相对于 ComfyUI 根目录；例如安装在 `S:\ComfyUI` 时，`models\checkpoints` 表示 `S:\ComfyUI\models\checkpoints`。
 
-| 文件 | ComfyUI 目录 | 用途 |
-| --- | --- | --- |
-| `z_image_turbo_fp8_e4m3fn.safetensors` | `models/diffusion_models` | Z-Image 构图模型 |
-| `qwen_3_4b.safetensors` | `models/text_encoders` | Z-Image 文本编码器 |
-| `ae.safetensors` | `models/vae` | Z-Image VAE |
-| `zukiNewCuteILL_newV20.safetensors` | `models/checkpoints` | 示例 NoobAI/Illustrious checkpoint，可替换 |
-| `jyt3136-000010.safetensors` | `models/loras` | 示例 JYT 风格 LoRA，可替换或旁路 |
-| `Blue Archive Animation Style.safetensors` | `models/loras` | 示例平涂风格 LoRA，可替换或旁路 |
-| `openpose_pre.safetensors` | `models/controlnet` | NoobAI OpenPose ControlNet |
-| `RealESRGAN_x4plus_anime_6B.pth` | `models/upscale_models` | 无扩散重绘的动漫 2× 超分 |
+| 阶段 | 必须使用的文件名 | 放置目录 | 工作流中的加载节点 |
+| --- | --- | --- | --- |
+| Z-Image | `z_image_turbo_fp8_e4m3fn.safetensors` | `models\diffusion_models` | `Z-Image Turbo FP8` |
+| Z-Image | `qwen_3_4b.safetensors` | `models\text_encoders` | `Z-Image Qwen Text Encoder` |
+| Z-Image | `ae.safetensors` | `models\vae` | `Z-Image VAE` |
+| NoobAI | `zukiNewCuteILL_newV20.safetensors` | `models\checkpoints` | `NoobAI/Illustrious 底模` |
+| NoobAI 风格 | `jyt3136-000010.safetensors` | `models\loras` | `NoobAI LoRA 1：JYT` |
+| NoobAI 风格 | `Blue Archive Animation Style.safetensors` | `models\loras` | `NoobAI LoRA 2：BA Animation` |
+| 姿势控制 | `openpose_pre.safetensors` | `models\controlnet` | `NoobAI OpenPose ControlNet` |
+| 最终超分 | `RealESRGAN_x4plus_anime_6B.pth` | `models\upscale_models` | `动漫超分模型：RealESRGAN 4×` |
 
-NoobAI OpenPose ControlNet：
+以 `S:\ComfyUI` 为例，最终目录应为：
 
 ```text
-https://huggingface.co/Laxhar/noob_openpose/resolve/main/openpose_pre.safetensors
+S:\ComfyUI\
+└─ models\
+   ├─ diffusion_models\
+   │  └─ z_image_turbo_fp8_e4m3fn.safetensors
+   ├─ text_encoders\
+   │  └─ qwen_3_4b.safetensors
+   ├─ vae\
+   │  └─ ae.safetensors
+   ├─ checkpoints\
+   │  └─ zukiNewCuteILL_newV20.safetensors
+   ├─ loras\
+   │  ├─ jyt3136-000010.safetensors
+   │  └─ Blue Archive Animation Style.safetensors
+   ├─ controlnet\
+   │  └─ openpose_pre.safetensors
+   └─ upscale_models\
+      └─ RealESRGAN_x4plus_anime_6B.pth
 ```
+
+`comfyui_controlnet_aux` 会自行管理 DWPose 所需的检测文件，因此不在这份手动模型清单中。第一次运行 DWPose 时保持网络可用即可。
+
+注意：
+
+- 这里的 `qwen_3_4b.safetensors` 是 **Z-Image 的文本编码器**，不是负责“自然语言转 NoobAI 标签”的 Ollama 模型；两者不能互相替代。
+- 旧版 ComfyUI 也可能把 Z-Image UNET 放在 `models\unet`。现有安装如果能够在加载节点中选到它，可以保持原位；新安装推荐使用 `models\diffusion_models`。
+- 示例 JSON 按上表文件名保存。若文件被改名或放在子目录中，加载工作流后需要在相应 Loader 节点重新选择一次。
+- 两个 LoRA 都属于 NoobAI 阶段；Z-Image 阶段不加载任何 LoRA。
 
 ## 配置自然语言转换
 
